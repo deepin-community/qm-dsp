@@ -1,0 +1,49 @@
+Source: qm-dsp
+Section: sound
+Priority: optional
+Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
+Uploaders:
+ Jaromír Mikeš <mira.mikes@seznam.cz>,
+ IOhannes m zmölnig (Debian/GNU) <umlaeute@debian.org>,
+Build-Depends:
+ debhelper (>= 10~),
+ pkg-config,
+ libatlas-base-dev,
+ vamp-plugin-sdk,
+Build-Conflicts:
+ libblas-dev,
+ libclapack-dev,
+Standards-Version: 4.1.0
+Homepage: http://code.soundsoftware.ac.uk/projects/qm-dsp
+Vcs-Git: https://anonscm.debian.org/git/pkg-multimedia/qm-dsp.git
+Vcs-Browser: https://anonscm.debian.org/git/pkg-multimedia/qm-dsp.git
+
+Package: libqm-dsp0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+ ${misc:Depends},
+ vamp-plugin-sdk,
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Description: C++ library for audio signals analysis
+ This is a C++ library for DSP and Music Informatics purposes,
+ written at the Queen Mary University.
+ Among other things, it provides functions for audio analysis.
+ .
+ This package contains the shared library for libqm-dsp.
+
+Package: libqm-dsp-dev
+Section: libdevel
+Architecture: any
+Depends:
+ libqm-dsp0 (= ${binary:Version}),
+ ${misc:Depends},
+Multi-Arch: same
+Description: Development files (headers) for libqm-dsp library
+ This is a C++ library for DSP and Music Informatics purposes,
+ written at the Queen Mary University.
+ Among other things, it provides functions for audio analysis.
+ .
+ This package contains the headers used to build applications
+ that use libqm-dsp.

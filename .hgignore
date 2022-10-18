@@ -1,0 +1,9 @@
+syntax: glob
+*.o
+*~
+*.orig
+*.a
+doc/html/
+tests/test-*
+*.rej
+

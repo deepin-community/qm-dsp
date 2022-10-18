@@ -1,0 +1,4 @@
+version=3
+opts=dversionmangle=s/~repack.*// \
+http://code.soundsoftware.ac.uk/projects/qm-dsp/files \
+	/attachments/download/\d+/qm-dsp-([\d.]+)\.tar\.gz

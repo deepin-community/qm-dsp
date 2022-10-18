@@ -1,0 +1,34 @@
+qm-dsp (1.7.1-4) unstable; urgency=medium
+
+  * Remove fix_includes patch (Closes: #877055)
+    * Build-Conflict on libblas-dev/libclapack-dev
+  * Modernize Vcs-Browser stanza
+  * Bump standards version to 4.1.0
+
+ -- IOhannes m zmölnig (Debian/GNU) <umlaeute@debian.org>  Thu, 28 Sep 2017 22:31:25 +0200
+
+qm-dsp (1.7.1-3) unstable; urgency=medium
+
+  * Introduce postclone.sh script to ignore .pc/ dir.
+  * Bump Standards.
+  * Update copyright.
+  * Fix dh version.
+  * Avoid useless linking.
+  * Fix FTCBFS. (Closes: #872249)
+
+ -- Jaromír Mikeš <mira.mikes@seznam.cz>  Tue, 15 Aug 2017 15:45:08 +0200
+
+qm-dsp (1.7.1-2) unstable; urgency=medium
+
+  * B-D on pkg-config &  libatlas-base-dev
+  * Link with g++
+  * Use shlibs:Depends for library-dependencies
+
+ -- IOhannes m zmölnig (Debian/GNU) <umlaeute@debian.org>  Thu, 15 Dec 2016 23:04:50 +0100
+
+qm-dsp (1.7.1-1) unstable; urgency=medium
+
+  [ Jaromír Mikeš ]
+  * Initial release (Closes: #847169)
+
+ -- IOhannes m zmölnig (Debian/GNU) <umlaeute@debian.org>  Thu, 15 Dec 2016 20:55:43 +0100

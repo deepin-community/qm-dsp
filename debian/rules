@@ -1,0 +1,88 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+include /usr/share/dpkg/architecture.mk
+PREFIX = /usr
+LIBDIR=lib/$(DEB_HOST_MULTIARCH)
+DESTDIR=$(CURDIR)/debian/tmp
+
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+MAJVERS = 0
+MINVERS = 0.0
+
+ifeq ($(origin CXX),default)
+CXX = $(DEB_HOST_GNU_TYPE)-g++
+endif
+PKG_CONFIG ?= $(DEB_HOST_GNU_TYPE)-pkg-config
+
+CFLAGS += -DNDEBUG -O3 -fPIC -ffast-math -ftree-vectorize -DUSE_PTHREADS
+CXXFLAGS += -fPIC -Wall
+CXXFLAGS += $(CFLAGS)
+
+QM-DSP_SO = libqm-dsp.so
+QM-DSP_MAJ = $(QM-DSP_SO).$(MAJVERS)
+QM-DSP_MIN = $(QM-DSP_MAJ).$(MINVERS)
+QM-DSP_DEP = libqm-dsp.a
+QM-DSP_H = qm-dsp
+
+QM-DSP_CFLAGS=$(shell $(PKG_CONFIG) --cflags blas-atlas lapack-atlas)
+QM-DSP_LFLAGS=-llapack_atlas $(shell $(PKG_CONFIG) --libs blas-atlas lapack-atlas) -lpthread
+
+CFLAGS+=$(QM-DSP_CFLAGS)
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	dh_auto_build --buildsystem=makefile -- -f build/general/Makefile.inc
+	dh_auto_build
+	$(CXX) -shared $(LDFLAGS) -o $(QM-DSP_MAJ) -Wl,-soname,$(QM-DSP_MAJ) -Wl,--whole-archive $(QM-DSP_DEP) -Wl,--no-whole-archive $(QM-DSP_LFLAGS)
+
+override_dh_auto_install:
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/base
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/chromagram
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/keydetection
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/mfcc
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/onsets
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/phasevocoder
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/rateconversion
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/rhythm
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/segmentation
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/signalconditioning
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/tempotracking
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/tonal
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/transforms
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/wavelet
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/hmm
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/maths/pca
+	install -d $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/thread
+	install -d $(DESTDIR)$(PREFIX)/$(LIBDIR)
+	install -m 644 base/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/base
+	install -m 644 dsp/chromagram/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/chromagram
+	install -m 644 dsp/keydetection/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/keydetection
+	install -m 644 dsp/mfcc/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/mfcc
+	install -m 644 dsp/onsets/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/onsets
+	install -m 644 dsp/phasevocoder/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/phasevocoder
+	install -m 644 dsp/rateconversion/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/rateconversion
+	install -m 644 dsp/rhythm/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/rhythm
+	install -m 644 dsp/segmentation/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/segmentation
+	install -m 644 dsp/signalconditioning/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/signalconditioning
+	install -m 644 dsp/tempotracking/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/tempotracking
+	install -m 644 dsp/tonal/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/tonal
+	install -m 644 dsp/transforms/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/transforms
+	install -m 644 dsp/wavelet/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/dsp/wavelet
+	install -m 644 hmm/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/hmm
+	install -m 644 maths/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/maths
+	install -m 644 maths/pca/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/maths/pca
+	install -m 644 thread/*.h $(DESTDIR)$(PREFIX)/include/$(QM-DSP_H)/thread
+	install -m 755 $(QM-DSP_MAJ) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(QM-DSP_MIN)
+	ln -sf $(QM-DSP_MIN)  $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(QM-DSP_MAJ)
+	ln -sf $(QM-DSP_MIN) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(QM-DSP_SO)
+	dh_auto_install
+
+override_dh_auto_clean:
+	dh_auto_clean
+	-find base dsp ext hmm maths thread -name "*.o" -delete
+	-rm $(QM-DSP_MAJ) $(QM-DSP_DEP)
