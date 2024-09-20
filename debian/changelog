@@ -1,3 +1,9 @@
+qm-dsp (1.7.1-4deepin0) unstable; urgency=medium
+
+  * No source change upload against GCC 12.
+
+ -- Tianyu Chen <sweetyfish@deepin.org>  Fri, 20 Sep 2024 12:16:26 +0800
+
 qm-dsp (1.7.1-4) unstable; urgency=medium
 
   * Remove fix_includes patch (Closes: #877055)
